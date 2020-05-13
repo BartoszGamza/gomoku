@@ -1,17 +1,35 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <Board v-if="gameOngoing" @nextTurn="changePlayer" @end="resetGameState" :player="currentPlayer" />
+    <template v-else>
+      Winner: {{ currentPlayer }}
+      <button @click="resetGameState">Restart</button>
+    </template>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import Board from './components/Board.vue'
+
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    Board
+  },
+  data () {
+    return {
+      currentPlayer: 'W',
+      gameOngoing: true
+    }
+  },
+  methods: {
+    changePlayer () {
+      this.currentPlayer = this.currentPlayer === 'W' ? 'B' : 'W'
+    },
+    resetGameState () {
+      this.gameOngoing = !this.gameOngoing
+    }
   }
 }
 </script>
