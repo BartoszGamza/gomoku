@@ -1,9 +1,15 @@
 <template>
   <div id="app">
-    <Board v-if="gameOngoing" @nextTurn="changePlayer" @end="resetGameState" :player="currentPlayer" />
+    <Board v-if="gameOngoing" @nextTurn="changePlayer" @end="endGame" :player="currentPlayer" />
     <template v-else>
+      <button v-for="(mode, index) in gameModes"
+        :key="index"
+        @click="setGame(mode)">
+          {{ mode.name }}
+      </button>
+    </template>
+     <template v-if="winner">
       Winner: {{ currentPlayer }}
-      <button @click="resetGameState">Restart</button>
     </template>
   </div>
 </template>
@@ -19,16 +25,64 @@ export default {
   },
   data () {
     return {
-      currentPlayer: 'W',
-      gameOngoing: true
+      currentGame: null,
+      currentPlayer: null,
+      gameOngoing: false,
+      winner: null,
+      gameModes: [
+        {
+          name: 'Human vs Human',
+          players: [{
+            type: 'Human',
+            name: 'Player 1',
+            mark: 'W'
+          },{
+            type: 'Human',
+            name: 'Player 2',
+            mark: 'B'
+          }]
+        },
+        {
+          name: 'Human vs AI',
+          players: [{
+            type: 'Human',
+            name: 'Human',
+            mark: 'W'
+            },{
+            type: 'AI',
+            name: 'Samantha',
+            mark: 'B'
+          }]
+        },
+        {
+          name: 'The neurament',
+          players: [{
+            type: 'AI',
+            name: 'Samantha',
+            mark: 'W'
+            },{
+            type: 'AI',
+            name: 'HAL 9000',
+            mark: 'B'
+          }]
+        }
+      ]
     }
   },
   methods: {
     changePlayer () {
-      this.currentPlayer = this.currentPlayer === 'W' ? 'B' : 'W'
+      this.currentPlayer = this.currentPlayer.name === this.currentGame.players[0].name
+        ? this.currentGame.players[1] : this.currentGame.players[0]
     },
-    resetGameState () {
-      this.gameOngoing = !this.gameOngoing
+    setGame (mode) {
+      this.winner = null
+      this.currentGame = mode
+      this.currentPlayer = this.currentGame.players[0]
+      this.gameOngoing = true
+    },
+    endGame () {
+      this.winner = this.currentPlayer && this.currentPlayer.name
+      this.gameOngoing = false
     }
   }
 }

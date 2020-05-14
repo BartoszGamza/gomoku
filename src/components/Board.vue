@@ -11,13 +11,14 @@
 
 <script>
 import Cell from '@/components/Cell'
-import _ from 'lodash'
+import { checkWin } from '@/lib/game'
+import { move } from '@/lib/ai'
 
 export default {
   props: {
     player: {
-      type: String,
-      default: 'W'
+      type: Object,
+      required: true
     }
   },
   components: {
@@ -29,61 +30,42 @@ export default {
     }
   },
   methods: {
+    checkWin,
+    move,
     initializeBoard () {
       this.board = Array(15).fill().map(() => Array(15).fill(''))
     },
     tryStonePlacing (rowIndex, colIndex) {
-      if (this.board[rowIndex][colIndex] === '') {
-        let tempBoard = [...this.board]
-        tempBoard[rowIndex][colIndex] = this.player
-        this.board = tempBoard
-        if (this.checkWin(tempBoard, rowIndex, colIndex)) {
-          this.endGame()
-        } else {
-          this.nextTurn()
-        }
+      if (this.board[rowIndex][colIndex] === '' && this.player.type === 'Human') {
+        let board = [...this.board]
+        board[rowIndex][colIndex] = this.player.mark
+        this.nextTurn({board, rowIndex, colIndex})
       }
     },
-    checkWin (board, x, y) {
-      const range = _.range(-5 + 1, 5)
-      return _.some([
-        this.checkDirection(_.map(range, (i) => {
-          return _.get(board, [x, y - i])
-        }), this.player),
-        this.checkDirection(_.map(range, (i) => {
-          return _.get(board, [x + i, y - i])
-        }), this.player),
-        this.checkDirection(_.map(range, (i) => {
-          return _.get(board, [x + i, y])
-        }), this.player),
-        this.checkDirection(_.map(range, (i) => {
-          return _.get(board, [x + i, y + i])
-        }), this.player)
-      ])
+    moveAI () {
+      this.nextTurn(this.move(this.board, this.player.mark))
     },
-    checkDirection (arr, val) {
-      let r = 0
-      for (let i = 0; i < arr.length; ++i) {
-        if (arr[i] === val) {
-          ++r
-        } else {
-          r = 0
-        }
-        if (r === 5) {
-          return true
-        }
+    nextTurn ({board, rowIndex, colIndex}) {
+      this.board = board
+      if (this.checkWin(board, rowIndex, colIndex, this.player.mark)) {
+        this.$emit('end')
+      } else {
+        this.$emit('nextTurn')
       }
-      return false
-    },
-    endGame () {
-      this.$emit('end')
-    },
-    nextTurn () {
-      this.$emit('nextTurn')
     }
   },
   mounted() {
     this.initializeBoard()
+  },
+  watch: {
+    player: {
+      immediate: true,
+      handler (player) {
+        if (player.type === 'AI') {
+          this.moveAI()
+        }
+      }
+    }
   }
 }
 </script>
