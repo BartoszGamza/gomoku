@@ -47,7 +47,7 @@ export default {
     },
     moveAI () {
       let boardCopy = _.cloneDeep(this.board)
-      const { rowIndex, colIndex } = move(boardCopy, this.currentPlayer.mark, this.wininngNumber, this.iterations)
+      const { rowIndex, colIndex } = move(boardCopy, this.currentPlayer.mark, this.wininngNumber, this.iterations, this.markAround)
       this.nextTurn(rowIndex, colIndex)
     },
     nextTurn (rowIndex, colIndex) {
@@ -74,6 +74,9 @@ export default {
     },
     iterations () {
       return this.currentGame && this.currentGame.iterations
+    },
+    markAround () {
+      return this.currentGame && this.currentGame.markAround
     }
   },
   mounted() {
