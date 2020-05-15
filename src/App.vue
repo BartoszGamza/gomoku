@@ -42,6 +42,12 @@
         max="100"
         v-model="iterations"
       >
+      <label for="markAround">Mark around</label>
+      <input
+        id="markAround"
+        type="checkbox"
+        v-model="markAround"
+      >
     </div>
   </div>
 </template>
@@ -64,6 +70,7 @@ export default {
       boardSize: 15,
       wininngNumber: 5,
       iterations: 3,
+      markAround: false,
       gameModes: [
         {
           name: 'Human vs Human',
@@ -114,7 +121,9 @@ export default {
       this.currentGame = {
         ...mode,
         board: this.boardSize,
-        winning: this.wininngNumber
+        winning: this.wininngNumber,
+        iterations: this.iterations,
+        markAround: this.markAround
       }
       this.currentPlayer = this.currentGame.players[0]
       this.gameStarted = true
