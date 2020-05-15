@@ -22,7 +22,7 @@ export default function move (boardClone, mark, winningNumber, iterations) {
   return move
 }
 
-const markAroundEnabled = true
+const markAroundEnabled = false
 
 function isMarkAround (board, x, y) {
   return markAroundEnabled ? findMarkAround(board, x, y) : true

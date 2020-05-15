@@ -62,8 +62,8 @@ export default {
       gameStarted: false,
       gameOngoing: false,
       winner: null,
-      boardSize: 3,
-      wininngNumber: 3,
+      boardSize: 15,
+      wininngNumber: 5,
       iterations: 3,
       gameModes: [
         {
