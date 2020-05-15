@@ -1,7 +1,6 @@
 import _ from 'lodash'
 
 export function checkWin (board, x, y, mark, winningCount) {
-  console.log(winningCount)
   const nothingToFill = !board.flat().some(cell => cell === '')
   const hasWinningCount = allOccourencies(board, x, y, mark, winningCount).some(occurence => occurence === winningCount)
   if (hasWinningCount) {

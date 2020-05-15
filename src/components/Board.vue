@@ -47,7 +47,7 @@ export default {
     },
     moveAI () {
       let boardCopy = _.cloneDeep(this.board)
-      const { rowIndex, colIndex } = move(boardCopy, this.currentPlayer.mark, this.wininngNumber)
+      const { rowIndex, colIndex } = move(boardCopy, this.currentPlayer.mark, this.wininngNumber, this.iterations)
       this.nextTurn(rowIndex, colIndex)
     },
     nextTurn (rowIndex, colIndex) {
@@ -71,6 +71,9 @@ export default {
     },
     boardCenter () {
       return this.boardSize && Math.round(this.boardSize / 2)
+    },
+    iterations () {
+      return this.currentGame && this.currentGame.iterations
     }
   },
   mounted() {
@@ -80,7 +83,7 @@ export default {
     currentPlayer: {
       handler (currentPlayer) {
         if (currentPlayer.type === 'AI' && this.board) {
-          setTimeout(() => this.moveAI(), 0)
+          this.moveAI()
         }
       }
     }

@@ -1,6 +1,6 @@
 import { allOccourencies } from '@/lib/game'
 
-export default function move (boardClone, mark, winningNumber) {
+export default function move (boardClone, mark, winningNumber, iterations) {
   let move
   let bestScore = -Infinity
   for (let rowIndex = 0; rowIndex < boardClone.length; ++rowIndex) {
@@ -8,7 +8,7 @@ export default function move (boardClone, mark, winningNumber) {
       if (isMarkAround(boardClone, rowIndex, colIndex)) {
         if (boardClone[rowIndex][colIndex] === '') {
           boardClone[rowIndex][colIndex] = mark
-          let score = minMax(boardClone, rowIndex, colIndex, getOtherMark(mark), false, 0, winningNumber)
+          let score = minMax(boardClone, rowIndex, colIndex, getOtherMark(mark), false, 0, winningNumber, iterations)
           boardClone[rowIndex][colIndex] = ''
           if (score > bestScore) {
             bestScore = score
@@ -18,7 +18,7 @@ export default function move (boardClone, mark, winningNumber) {
       }
     }
   }
-  console.log(bestScore)
+  console.log(bestScore, mark)
   return move
 }
 
@@ -42,19 +42,20 @@ function findMarkAround (board, x, y) {
 // }
 
 const valueDictionary = {
-  1: 0,
-  2: 10,
-  3: 100,
-  4: 1000,
-  5: 100000
+  0: 0,
+  1: 10,
+  2: 1000,
+  3: 1000000,
+  4: 1000000000,
+  5: 10000000000000
 }
 
 function evaluate (board, x, y, mark, isMaximizing, winningNumber) {
   const total = Math.max(...allOccourencies(board, x, y, mark, winningNumber))
-  return isMaximizing ? valueDictionary[total] : -valueDictionary[total]
+  return isMaximizing ? -valueDictionary[total] : valueDictionary[total]
 }
 
-function minMax (boardClone, rowIndex, colIndex, mark, isMaximizing, depth, winningNumber) {
+function minMax (boardClone, rowIndex, colIndex, mark, isMaximizing, depth, winningNumber, iterations) {
   const result = evaluate(boardClone, rowIndex, colIndex, mark, isMaximizing, winningNumber)
   if (result > 1) {
     return result
@@ -66,7 +67,7 @@ function minMax (boardClone, rowIndex, colIndex, mark, isMaximizing, depth, winn
         if (isMarkAround(boardClone, rowIndex, colIndex)) {
           if (boardClone[rowIndex][colIndex] === '') {
             boardClone[rowIndex][colIndex] = mark
-            let score = depth > 5 ? result : setTimeout(() => minMax(boardClone, rowIndex, colIndex, getOtherMark(mark), false, ++depth), 0)
+            let score = depth > iterations ? result : setTimeout(() => minMax(boardClone, rowIndex, colIndex, getOtherMark(mark), false, ++depth), 0)
             boardClone[rowIndex][colIndex] = ''
             best = Math.max(score, best)
           }
@@ -81,7 +82,7 @@ function minMax (boardClone, rowIndex, colIndex, mark, isMaximizing, depth, winn
         if (isMarkAround(boardClone, rowIndex, colIndex)) {
           if (boardClone[rowIndex][colIndex] === '') {
             boardClone[rowIndex][colIndex] = mark
-            let score = depth > 5 ? result : setTimeout(() => minMax(boardClone, rowIndex, colIndex, getOtherMark(mark), true, ++depth), 0)
+            let score = depth > iterations ? result : setTimeout(() => minMax(boardClone, rowIndex, colIndex, getOtherMark(mark), true, ++depth), 0)
             boardClone[rowIndex][colIndex] = ''
             best = Math.min(score, best)
           }

@@ -4,7 +4,7 @@
       Winner: {{ winner }}
     </template>
     <Board
-      v-if="gameOngoing"
+      v-if="gameStarted"
       @nextTurn="changePlayer"
       @end="endGame"
       v-bind="{
@@ -34,6 +34,14 @@
         max="5"
         v-model="wininngNumber"
       >
+      <label for="iterations">Iterations</label>
+      <input
+        id="iterations"
+        type="number"
+        min="1"
+        max="100"
+        v-model="iterations"
+      >
     </div>
   </div>
 </template>
@@ -51,10 +59,12 @@ export default {
     return {
       currentGame: null,
       currentPlayer: null,
+      gameStarted: false,
       gameOngoing: false,
       winner: null,
-      boardSize: 15,
-      wininngNumber: 5,
+      boardSize: 3,
+      wininngNumber: 3,
+      iterations: 3,
       gameModes: [
         {
           name: 'Human vs Human',
@@ -109,10 +119,11 @@ export default {
       }
       this.currentPlayer = this.currentGame.players[0]
       this.gameOngoing = true
+      this.gameStarted = true
     },
     endGame (result) {
-      console.log('endGane', result)
       // this.gameOngoing = false
+      this.gameOngoing = false
       this.winner = result
     }
   }
