@@ -48,6 +48,7 @@
         type="checkbox"
         v-model="markAround"
       >
+      <img class="mark" v-if="markAround" src="@/assets/mark.png" >
     </div>
   </div>
 </template>
@@ -152,5 +153,9 @@ export default {
 
 .form {
   max-width: 300px;
+}
+
+.mark {
+  width: 100%;
 }
 </style>
