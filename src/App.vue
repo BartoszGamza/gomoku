@@ -129,7 +129,6 @@ export default {
       this.gameStarted = true
     },
     endGame (result) {
-      // this.gameOngoing = false
       this.winner = result
     }
   }
