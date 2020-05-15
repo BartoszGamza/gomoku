@@ -60,7 +60,6 @@ export default {
       currentGame: null,
       currentPlayer: null,
       gameStarted: false,
-      gameOngoing: false,
       winner: null,
       boardSize: 15,
       wininngNumber: 5,
@@ -118,12 +117,10 @@ export default {
         winning: this.wininngNumber
       }
       this.currentPlayer = this.currentGame.players[0]
-      this.gameOngoing = true
       this.gameStarted = true
     },
     endGame (result) {
       // this.gameOngoing = false
-      this.gameOngoing = false
       this.winner = result
     }
   }
