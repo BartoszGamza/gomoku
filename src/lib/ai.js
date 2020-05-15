@@ -1,4 +1,4 @@
-import { allOccourencies } from '@/lib/game'
+import { allOccourencies, allEnds } from '@/lib/game'
 
 export default function move (boardClone, mark, winningNumber, iterations, markAround) {
   let move
@@ -39,74 +39,74 @@ function findMarkAround (board, x, y) {
   }, false)
 }
 
-const valueDictionary = {
-  0: 0,
-  1: 10,
-  2: 1000,
-  3: 1000000,
-  4: 1000000000,
-  5: 10000000000000
-}
-
-function evaluate (board, x, y, mark, isMaximizing, winningNumber) {
-  const total = Math.max(...allOccourencies(board, x, y, mark, winningNumber))
-  return isMaximizing ? -valueDictionary[total] : valueDictionary[total]
-}
-
-// function evaluateWithShape (board, x, y, mark, isMaximizing, winningNumber) {
-//   const total = Math.max(...allOccourencies(board, x, y, mark, winningNumber))
-//   const ends = Math.max(...allEnds(board, x, y, mark, winningNumber))
-//   if (ends === 0 && total < 5) {
-//     return 0
-//   }
-//   switch (total) {
-//     case 4:
-//       switch(ends) {
-//         case 1:
-//           if (isMaximizing)
-//             return 100000000
-//           return 50
-//         case 2:
-//           if (isMaximizing)
-//             return 100000000
-//           return 500000
-//       }
-//       break
-//     case 3:
-//       switch(ends) {
-//         case 1:
-//           if (isMaximizing)
-//             return 7
-//           return 5
-//         case 2:
-//           if (isMaximizing)
-//             return 10000
-//           return 50
-//       }
-//       break
-//     case 2:
-//       switch(ends) {
-//         case 1:
-//           return 2
-//         case 2:
-//           return 5
-//       }
-//       break
-//     case 1:
-//       switch(ends) {
-//         case 1:
-//           return 0.5
-//         case 2:
-//           return 1
-//       }
-//       break
-//     default:
-//       return 200000000
-//   }
+// const valueDictionary = {
+//   0: 0,
+//   1: 10,
+//   2: 1000,
+//   3: 1000000,
+//   4: 1000000000,
+//   5: 10000000000000
 // }
 
+// function evaluate (board, x, y, mark, isMaximizing, winningNumber) {
+//   const total = Math.max(...allOccourencies(board, x, y, mark, winningNumber))
+//   return isMaximizing ? -valueDictionary[total] : valueDictionary[total]
+// }
+
+function evaluateWithShape (board, x, y, mark, isMaximizing, winningNumber) {
+  const total = Math.max(...allOccourencies(board, x, y, mark, winningNumber))
+  const ends = Math.max(...allEnds(board, x, y, mark, winningNumber))
+  if (ends === 0 && total < 5) {
+    return 0
+  }
+  switch (total) {
+    case 4:
+      switch(ends) {
+        case 1:
+          if (isMaximizing)
+            return 100000000
+          return 50
+        case 2:
+          if (isMaximizing)
+            return 100000000
+          return 500000
+      }
+      break
+    case 3:
+      switch(ends) {
+        case 1:
+          if (isMaximizing)
+            return 7
+          return 5
+        case 2:
+          if (isMaximizing)
+            return 10000
+          return 50
+      }
+      break
+    case 2:
+      switch(ends) {
+        case 1:
+          return 2
+        case 2:
+          return 5
+      }
+      break
+    case 1:
+      switch(ends) {
+        case 1:
+          return 0.5
+        case 2:
+          return 1
+      }
+      break
+    default:
+      return 200000000
+  }
+}
+
 function minMax (boardClone, rowIndex, colIndex, mark, isMaximizing, alpha, beta, depth, winningNumber, iterations, markAround) {
-  const result = evaluate(boardClone, rowIndex, colIndex, mark, isMaximizing, winningNumber)
+  const result = evaluateWithShape(boardClone, rowIndex, colIndex, mark, isMaximizing, winningNumber)
   if (result > 1) {
     return result
   }
